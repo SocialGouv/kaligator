@@ -2,6 +2,11 @@
 
 This collection of scripts helps using KALI dumps (the French Conventions collectives nationales database).
 
+Currently they let you:
+- flatten and merge the XML files (deprecated)
+- convert all the articles' XML files to individual JSON files
+- parse the articles' XML files and import them to a MongoDB database
+
 These scripts were created for the [Code Du Travail Numérique](https://incubateur.social.gouv.fr/startups/code-du-travail-numerique/) project.
 
 You can see an example of a Convention Collective on Legifrance [here](https://www.legifrance.gouv.fr/affichIDCC.do;jsessionid=345B979AD534CB99791356E28B8A9CB0.tplgfr35s_1?idSectionTA=KALISCTA000005733781&cidTexte=KALITEXT000005639851&idConvention=KALICONT000005635890)
