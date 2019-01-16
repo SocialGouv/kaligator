@@ -1,0 +1,4 @@
+progressbar2==3.39.2
+xmljson==0.2.0
+gevent==1.4.0
+pymongo==3.7.2
