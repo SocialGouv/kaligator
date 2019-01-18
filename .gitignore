@@ -1,2 +1,3 @@
 *.json
+__pycache__
 kali_json
