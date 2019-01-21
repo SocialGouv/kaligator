@@ -14,13 +14,17 @@ class DocumentProcessor(object):
         with open(self.xml_path, "r") as f:
             element = ElementTree.parse(f)
         self.root = element.getroot()
-        self.json = custom_xml_parser.data(self.root)["ARTICLE"]
+        parsed_root = custom_xml_parser.data(self.root)
+        root_keys = list(parsed_root.keys())
+        if len(root_keys) > 1:
+            raise Exception("parsed XML has more than one element at the root level: %s" % ",".join(root_keys))
+        self.json = parsed_root[root_keys[0]]
 
     def format_array_fields(self):
         for field in self.array_fields:
-            value = deep_get(self.json, field)
-            if value is not None and not isinstance(value, list):
-                deep_set(self.json, field, [value])
+            for value, selector in deep_get(self.json, field):
+                if value is not None and not isinstance(value, list):
+                    deep_set(self.json, selector, [value])
 
     def format_html_fields(self):
         for field in self.html_fields:
@@ -46,7 +50,18 @@ class ArticleProcessor(DocumentProcessor):
     def __init__(self, xml_path, **kwargs):
         super(ArticleProcessor, self).__init__(
             xml_path,
-            html_fields=["BLOC_TEXTUEL.CONTENU", "NOTA.CONTENU"],
-            array_fields=["VERSIONS.VERSION", "LIENS.LIEN"],
+            html_fields=["BLOC_TEXTUEL/CONTENU", "NOTA/CONTENU"],
+            array_fields=["VERSIONS/VERSION", "LIENS/LIEN"],
+            **kwargs
+        )
+
+
+class IDCCProcessor(DocumentProcessor):
+
+    def __init__(self, xml_path, **kwargs):
+        super(IDCCProcessor, self).__init__(
+            xml_path,
+            html_fields=[],
+            array_fields=["STRUCTURE_TXT/TM", "ACTS_PRO/ACT_PRO", "NUMS_BROCH/NUM_BROCH", "STRUCTURE_TXT/TM/LIEN_TXT"],
             **kwargs
         )

@@ -1,0 +1,14 @@
+README.md
+setup.py
+kali_extractor/__init__.py
+kali_extractor/custom_xml_parser.py
+kali_extractor/dict_utils.py
+kali_extractor/documents_processor.py
+kali_extractor/extract_kali_dumps.py
+kali_extractor/file_utils.py
+kali_extractor.egg-info/PKG-INFO
+kali_extractor.egg-info/SOURCES.txt
+kali_extractor.egg-info/dependency_links.txt
+kali_extractor.egg-info/top_level.txt
+kali_extractor/tests/__init__.py
+kali_extractor/tests/dict_utils_tests.py

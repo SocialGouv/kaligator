@@ -37,10 +37,16 @@ mkvirtualenv cdtn-scripts
 pip3 install -r requirements.txt
 ```
 
+Then you can install the pip package in edit mode so that imports work properly
+
+```sh
+pip3 install -e .
+```
+
 ## Usage
 
 ```sh
-python3 convert_xml_to_json.py --mode mongodb /Users/jean/Downloads/kali_dump
+python3 kali_extractor/extract_kali_dumps.py --drop --mode mongodb /Users/jean/Downloads/kali_dump
 ```
 
-you can use `python3 convert_xml_to_json.py -h` to get more info on the accepted arguments
+you can use `python3 kali_extractor/extract_kali_dumps.py -h` to get more info on the accepted arguments
