@@ -11,6 +11,10 @@ class DocumentProcessor(object):
         self.array_fields = [] if array_fields is None else array_fields
 
     def parse_xml(self):
+        """
+            reads and parses the XML into a json-formatted dictionary object.
+            drops the root tag (<ARTICLE>, <IDCC> ...)
+        """
         with open(self.xml_path, "r") as f:
             element = ElementTree.parse(f)
         self.root = element.getroot()
@@ -21,12 +25,22 @@ class DocumentProcessor(object):
         self.json = parsed_root[root_keys[0]]
 
     def format_array_fields(self):
+        """
+            Enforce some fields to always be arrays, even with a single entry.
+            By default, you get a mixed schema, with single items as objects, and
+            multiple items as arrays
+        """
         for field in self.array_fields:
             for value, selector in deep_get(self.json, field):
                 if value is not None and not isinstance(value, list):
                     deep_set(self.json, selector, [value])
 
     def format_html_fields(self):
+        """
+            Enforce some fields to contain their content as unformatted HTML.
+            By default, all the fields are parsed and split into objects but
+            we want to treat HTML content as raw text.
+        """
         for field in self.html_fields:
             xpath_selector = "./%s" % "/".join(field.split("."))
             value = self.root.find(xpath_selector)
@@ -45,8 +59,8 @@ class DocumentProcessor(object):
         self.format_array_fields()
         return self.json
 
-class ArticleProcessor(DocumentProcessor):
 
+class ArticleProcessor(DocumentProcessor):
     def __init__(self, xml_path, **kwargs):
         super(ArticleProcessor, self).__init__(
             xml_path,
@@ -57,11 +71,30 @@ class ArticleProcessor(DocumentProcessor):
 
 
 class IDCCProcessor(DocumentProcessor):
-
     def __init__(self, xml_path, **kwargs):
         super(IDCCProcessor, self).__init__(
             xml_path,
             html_fields=[],
             array_fields=["STRUCTURE_TXT/TM", "ACTS_PRO/ACT_PRO", "NUMS_BROCH/NUM_BROCH", "STRUCTURE_TXT/TM/LIEN_TXT"],
+            **kwargs
+        )
+
+
+class SectionTaProcessor(DocumentProcessor):
+    def __init__(self, xml_path, **kwargs):
+        super(SectionTaProcessor, self).__init__(
+            xml_path,
+            html_fields=[],
+            array_fields=["STRUCTURE_TA/LIEN_ART", "STRUCTURE_TA/LIEN_SECTION_TA", "CONTEXTE/TEXTE/TITRE_TXT", "CONTEXTE/TEXTE/TM/TITRE_TM"],
+            **kwargs
+        )
+
+
+class TexteProcessor(DocumentProcessor):
+    def __init__(self, xml_path, **kwargs):
+        super(TexteProcessor, self).__init__(
+            xml_path,
+            html_fields=[],
+            array_fields=["STRUCT/LIEN_ART", "VERSIONS/VERSION"],
             **kwargs
         )

@@ -4,13 +4,15 @@ import progressbar
 import gevent.pool
 from pymongo import MongoClient
 import argparse
-from documents_processor import ArticleProcessor, IDCCProcessor
+from documents_processor import ArticleProcessor, IDCCProcessor, SectionTaProcessor, TexteProcessor
 from functools import partial
 from file_utils import get_nested_file_paths
 
 PROCESSOR_MAPPING = {
     "article": ArticleProcessor,
     "conteneur": IDCCProcessor,
+    "section_ta": SectionTaProcessor,
+    "texte": TexteProcessor,
 }
 
 def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
@@ -27,12 +29,33 @@ def convert_and_write_json_file(output_dir, doc_type, xml_path):
         f.write(json_dump.encode("utf-8"))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Parse and import data from the KALI database dumps')
-    parser.add_argument('--mode', help="either store individual JSON files or import into a MongoDB database", choices=["json", "mongodb"], default="json")
-    parser.add_argument('--output-dir', help="only works with json mode. defines where files will be stored.", default="./kali_json")
-    parser.add_argument('--mongo-db-name', help="only works with mongodb mode. the name of the database to store documents into.", default="kali")
-    parser.add_argument('--gevent-pool', help="will use a gevent pool for faster processing", action="store_true")
-    parser.add_argument('--drop', help="drops existing database before starting. only works with mode MongoDB", action="store_true")
+    parser = argparse.ArgumentParser(
+        description='Parse and import data from the KALI database dumps'
+    )
+    parser.add_argument(
+        '--mode', choices=["json", "mongodb"], default="json",
+        help="either store individual JSON files or import into a MongoDB database",
+    )
+    parser.add_argument(
+        '--output-dir', default="./kali_json",
+        help="defines where files will be stored. only works with json mode"
+    )
+    parser.add_argument(
+        '--mongo-db-name', default="kali",
+        help="the name of the database to store documents into. only works with mongodb mode"
+    )
+    parser.add_argument(
+        '--gevent-pool', action="store_true",
+        help="will use a gevent pool for faster processing"
+    )
+    parser.add_argument(
+        '--drop', action="store_true",
+        help="drops existing database before starting. only works with mode MongoDB"
+    )
+    parser.add_argument(
+        '--only', choices=["article", "idcc", "section_ta", "texte"],
+        help="limits the extraction to a single document type"
+    )
     parser.add_argument('root_dir', help="path to the extracted KALI dump")
     args = parser.parse_args()
 
@@ -51,7 +74,12 @@ if __name__ == "__main__":
     if args.drop:
         mongo_client.drop_database(args.mongo_db_name)
 
-    for doc_type in ["article", "conteneur"]:
+    if args.only:
+        doc_types = [args.only]
+    else:
+        doc_types = ["article", "conteneur", "section_ta", "texte"]
+
+    for doc_type in doc_types:
         subdir_path = os.path.join(args.root_dir, doc_type)
         print("going through %s recursively to get XML paths ..." % subdir_path)
         xml_paths = get_nested_file_paths(subdir_path)
