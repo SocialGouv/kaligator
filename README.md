@@ -1,5 +1,7 @@
 # KALI Dumps scripts
 
+[![Build Status](https://travis-ci.com/SocialGouv/kali_dumps_scripts.svg?branch=master)](https://travis-ci.com/SocialGouv/kali_dumps_scripts)
+
 This collection of scripts helps using KALI dumps (the French Conventions collectives nationales database).
 
 Currently they let you:
