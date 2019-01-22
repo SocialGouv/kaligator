@@ -7,6 +7,8 @@ import argparse
 from documents_processor import ArticleProcessor, IDCCProcessor, SectionTaProcessor, TexteProcessor
 from functools import partial
 from file_utils import get_nested_file_paths
+from downloader import Downloader
+
 
 PROCESSOR_MAPPING = {
     "article": ArticleProcessor,
@@ -16,8 +18,8 @@ PROCESSOR_MAPPING = {
 }
 
 def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
-    processor = [doc_type]
-    parsed_document = PROCESSOR_MAPPING[doc_type](xml_path).process()
+    processor = PROCESSOR_MAPPING[doc_type]
+    parsed_document = processor(xml_path).process()
     mongo_db[doc_type].insert_one(parsed_document)
 
 def convert_and_write_json_file(output_dir, doc_type, xml_path):
@@ -33,12 +35,20 @@ if __name__ == "__main__":
         description='Parse and import data from the KALI database dumps'
     )
     parser.add_argument(
-        '--mode', choices=["json", "mongodb"], default="json",
+        '--mode', choices=["json", "mongodb"], default="mongodb",
         help="either store individual JSON files or import into a MongoDB database",
+    )
+    parser.add_argument(
+        '--download', action="store_true",
+        help="download and extract the dump if it's not already done",
     )
     parser.add_argument(
         '--output-dir', default="./kali_json",
         help="defines where files will be stored. only works with json mode"
+    )
+    parser.add_argument(
+        '--mongo-uri', default=os.environ.get("MONGODB_URI", "mongodb://localhost"),
+        help="fully qualified MongoDB uri"
     )
     parser.add_argument(
         '--mongo-db-name', default="kali",
@@ -56,8 +66,14 @@ if __name__ == "__main__":
         '--only', choices=["article", "idcc", "section_ta", "texte"],
         help="limits the extraction to a single document type"
     )
-    parser.add_argument('root_dir', help="path to the extracted KALI dump")
+    parser.add_argument(
+        '--dump-dir',  default="/tmp/kali_dump",
+        help="path to the extracted KALI dump"
+    )
     args = parser.parse_args()
+
+    if args.download:
+        Downloader(download_dir=args.dump_dir).run()
 
     if not os.path.exists(args.output_dir):
         os.makedirs(args.output_dir)
@@ -67,7 +83,7 @@ if __name__ == "__main__":
         print("will write JSON files to %s" % args.output_dir)
     else:
         print("will insert mongo documents into '%s' database" % args.mongo_db_name)
-        mongo_client = MongoClient()
+        mongo_client = MongoClient(args.mongo_uri)
         mongo_db = mongo_client[args.mongo_db_name]
         action = partial(convert_and_insert_in_mongo, mongo_db)
 
@@ -79,8 +95,12 @@ if __name__ == "__main__":
     else:
         doc_types = ["article", "conteneur", "section_ta", "texte"]
 
+    dump_dir_root = os.path.join(args.dump_dir, "kali", "global")
+    if not os.path.isdir(dump_dir_root):
+        raise Exception("dump dir does not exist or doesn't contain the extracted dump.")
+
     for doc_type in doc_types:
-        subdir_path = os.path.join(args.root_dir, doc_type)
+        subdir_path = os.path.join(dump_dir_root, doc_type)
         print("going through %s recursively to get XML paths ..." % subdir_path)
         xml_paths = get_nested_file_paths(subdir_path)
         print("done ! got %s XML paths." % len(xml_paths))

@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    ports:
+      - "27019:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: kali
+      MONGO_INITDB_ROOT_PASSWORD: kali
+  api:
+    build: kali_api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./kali_api:/code
+    environment:
+      - MONGODB_URI=mongodb://kali:kali@mongodb/
+  extractor:
+    build: kali_extractor
+    volumes:
+      - ./kali_extractor:/code
+    environment:
+      - MONGODB_URI=mongodb://kali:kali@mongodb/admin
