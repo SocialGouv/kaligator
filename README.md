@@ -22,7 +22,7 @@ We're working on publishing a public version of this MongoDB database and of the
 
 ## Schema documentation
 
-You can find some work-in-progress docs on a [Google Spreadsheet here](https://github.com/SocialGouv/kali_dumps_scripts.git).
+You can find some work-in-progress docs on a [Google Spreadsheet here](https://docs.google.com/spreadsheets/d/1hD2-zIcXXUEBvkHQ3XWZke_ozbyh0D5PQkEqLC-sOEs/edit?usp=sharing).
 
 ![docs screenshot](https://i.imgur.com/8XgOmhL.png)
 
