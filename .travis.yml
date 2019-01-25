@@ -1,10 +1,10 @@
----
-dist: xenial
+dist: trusty
 sudo: false
 git:
   depth: 5
 
 language: python
-python: 3.7
-
+python: "3.6"
+install: pip install -r kali_extractor/requirements.txt && pip install -e .
 cache: pip
+script: python kali_extractor/tests/dict_utils_tests.py
