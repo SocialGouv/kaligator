@@ -95,6 +95,6 @@ class TexteProcessor(DocumentProcessor):
         super(TexteProcessor, self).__init__(
             xml_path,
             html_fields=[],
-            array_fields=["STRUCT/LIEN_ART", "VERSIONS/VERSION"],
+            array_fields=["STRUCT/LIEN_SECTION_TA", "STRUCT/LIEN_ART", "VERSIONS/VERSION"],
             **kwargs
         )
