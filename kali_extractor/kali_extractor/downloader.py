@@ -50,8 +50,10 @@ class Downloader(object):
         os.system("mkdir -p %s" % self.download_dir)
         print("extracting tar.gz archive to %s ..." % self.download_dir)
         os.system(
-            "pv %s | tar -zxf - -C %s" %
-            (self.dump_filename, self.download_dir)
+            "pv %s | tar -zxf - -C %s" % (
+                os.path.join(self.download_dir, self.dump_filename),
+                self.download_dir
+            )
         )
         print("extract done !")
 

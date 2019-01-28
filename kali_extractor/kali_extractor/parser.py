@@ -79,6 +79,9 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
+    if not os.path.isdir(args.dump_dir):
+        os.makedirs(args.dump_dir)
+
     if args.download:
         Downloader(download_dir=args.dump_dir).run()
 
