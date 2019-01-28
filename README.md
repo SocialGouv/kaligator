@@ -20,15 +20,19 @@ Additionally, the scripts let you:
 
 We're working on publishing a public version of this MongoDB database and of the JSON REST API.
 
-## Schema docs
+## Schema documentation
 
-You can find some work-in-progress docs on a [Google Spreadsheet here](https://github.com/SocialGouv/kali_dumps_scripts.git).
+You can find some work-in-progress docs on a [Google Spreadsheet here](https://docs.google.com/spreadsheets/d/1hD2-zIcXXUEBvkHQ3XWZke_ozbyh0D5PQkEqLC-sOEs/edit?usp=sharing).
 
 ![docs screenshot](https://i.imgur.com/8XgOmhL.png)
 
 The infos in this documentation come from:
 - the DTD files available on Data Gouv
 - exploring the MongoDB database that these scripts help create. The M3T tool is very helpful for this.
+
+I also built a partial Entity Relationship Diagram, to see the relations between the different objects of this dump:
+
+![entity relationship diagram](https://www.lucidchart.com/publicSegments/view/100dd7d0-6a0c-4569-a5d8-580b7ac3f1e3/image.png)
 
 ## Local setup
 
