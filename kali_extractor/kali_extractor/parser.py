@@ -1,7 +1,5 @@
-import json
 import os
 import progressbar
-import gevent.pool
 from pymongo import MongoClient
 import argparse
 from documents_processor import ArticleProcessor, IDCCProcessor, \
@@ -25,30 +23,13 @@ def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
     mongo_db[doc_type].insert_one(parsed_document)
 
 
-def convert_and_write_json_file(output_dir, doc_type, xml_path):
-    parsed_document = ArticleProcessor(xml_path).process()
-    json_dump = json.dumps(parsed_document, indent=2, ensure_ascii=False)
-    xml_file_name = os.path.splitext(os.path.basename(xml_path))[0]
-    dest_json_path = os.path.join(output_dir, "%s.json" % xml_file_name)
-    with open(dest_json_path, "wb") as f:
-        f.write(json_dump.encode("utf-8"))
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Parse and import data from the KALI database dumps'
     )
     parser.add_argument(
-        '--mode', choices=["json", "mongodb"], default="mongodb",
-        help="either store individual JSON files or import into MongoDB",
-    )
-    parser.add_argument(
         '--download', action="store_true",
         help="download and extract the dump if it's not already done",
-    )
-    parser.add_argument(
-        '--output-dir', default="./kali_json",
-        help="defines where files will be stored. only works with json mode"
     )
     parser.add_argument(
         '--mongo-uri',
@@ -59,10 +40,6 @@ if __name__ == "__main__":
         '--mongo-db-name', default="kali",
         help="the name of the database to store documents into." +
         "only works with mongodb mode"
-    )
-    parser.add_argument(
-        '--gevent-pool', action="store_true",
-        help="will use a gevent pool for faster processing"
     )
     parser.add_argument(
         '--drop', action="store_true",
@@ -85,20 +62,13 @@ if __name__ == "__main__":
     if args.download:
         Downloader(download_dir=args.dump_dir).run()
 
-    if not os.path.exists(args.output_dir):
-        os.makedirs(args.output_dir)
-
-    if args.mode == "json":
-        action = partial(convert_and_write_json_file, args.output_dir)
-        print("will write JSON files to %s" % args.output_dir)
-    else:
-        print(
-            "will insert mongo documents into '%s' database" %
-            args.mongo_db_name
-        )
-        mongo_client = MongoClient(args.mongo_uri)
-        mongo_db = mongo_client[args.mongo_db_name]
-        action = partial(convert_and_insert_in_mongo, mongo_db)
+    print(
+        "will insert mongo documents into '%s' database" %
+        args.mongo_db_name
+    )
+    mongo_client = MongoClient(args.mongo_uri)
+    mongo_db = mongo_client[args.mongo_db_name]
+    action = partial(convert_and_insert_in_mongo, mongo_db)
 
     if args.drop:
         mongo_client.drop_database(args.mongo_db_name)
@@ -122,13 +92,5 @@ if __name__ == "__main__":
         )
         xml_paths = get_nested_file_paths(subdir_path)
         print("done ! got %s XML paths." % len(xml_paths))
-
-        if args.gevent_pool:
-            print("(using a gevent Pool)")
-            pool = gevent.pool.Pool(10)
-            for xml_path in xml_paths:
-                pool.spawn(action, doc_type, xml_path)
-            pool.join()
-        else:
-            for i in progressbar.progressbar(range(len(xml_paths))):
-                action(doc_type, xml_paths[i])
+        for i in progressbar.progressbar(range(len(xml_paths))):
+            action(doc_type, xml_paths[i])
