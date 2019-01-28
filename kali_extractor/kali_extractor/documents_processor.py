@@ -1,7 +1,8 @@
 from xml.etree import ElementTree
 import html
-from custom_xml_parser import custom_xml_parser
-from dict_utils import deep_get, deep_set
+from kali_extractor.custom_xml_parser import custom_xml_parser
+from kali_extractor.dict_utils import deep_get, deep_set
+from xmljson import abdera
 
 
 class DocumentProcessor(object):
@@ -101,13 +102,62 @@ class SectionTaProcessor(DocumentProcessor):
         )
 
 
+def flatten_abdera_item(item):
+    """
+        takes a dict parsed by the abdera algorithm and returns one
+        that is formatted like a custom one
+    """
+    keys = list(item.keys())
+    if len(keys) != 1:
+        raise Exception("found %s abdera tag names instead of 1" % len(keys))
+    key = keys[0]
+    abdera_obj = item[key]
+    new_object = {}
+    for name, value in abdera_obj.get("attributes").items():
+        new_object[name] = value
+    if "children" in abdera_obj:
+        if not isinstance(abdera_obj["children"], list):
+            raise Exception(
+                "children should be a list but was a %s" %
+                abdera_obj["children"].__class__
+            )
+        if len(abdera_obj["children"]) != 1:
+            raise Exception(
+                "children should contain a single item but has %s" %
+                len(abdera_obj["children"])
+            )
+        new_object["_text"] = abdera_obj["children"][0]
+    return {key: new_object}
+
+
 class TexteProcessor(DocumentProcessor):
     def __init__(self, xml_path, **kwargs):
         super(TexteProcessor, self).__init__(
             xml_path,
             html_fields=[],
-            array_fields=[
-                "STRUCT/LIEN_SECTION_TA", "STRUCT/LIEN_ART", "VERSIONS/VERSION"
-            ],
+            array_fields=["VERSIONS/VERSION"],
             **kwargs
         )
+
+    def parse_xml(self):
+        """
+            slightly hacky, this fixes #6, as the STRUCT contains a mixed
+            list of two different tags, we cannot treat it as the array fields
+        """
+        super(TexteProcessor, self).parse_xml()
+        if 'STRUCT' not in self.json:
+            return
+        doc = abdera.data(self.root)
+        subdocs = [
+            d for d in doc["TEXTEKALI"]["children"]
+            if ["STRUCT"] == list(d.keys())
+        ]
+        if len(subdocs) != 1:
+            raise Exception(
+                "found %s STRUCT tags in TEXTEKALI instead of 1" % len(subdocs)
+            )
+        if not subdocs[0]["STRUCT"].get("children"):
+            return
+        children = subdocs[0]["STRUCT"]["children"]
+        flat_children = [flatten_abdera_item(c) for c in children]
+        self.json["STRUCT"] = flat_children

@@ -51,7 +51,7 @@ docker-compose run extractor python parser.py --download
 ## Run tests
 
 ```sh
-docker-compose run extractor python tests/dict_utils_tests.py
+docker-compose run extractor python run_tests.py
 ```
 
 ## Usage
