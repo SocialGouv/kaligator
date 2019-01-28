@@ -1,0 +1,6 @@
+repos:
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 'master'
+    exclude: ^scripts
+    hooks:
+    - id: flake8

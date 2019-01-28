@@ -1,5 +1,4 @@
 from ftplib import FTP
-import time
 import os
 
 
@@ -27,10 +26,15 @@ class Downloader(object):
 
     def get_last_dump_filename(self):
         print("trying to list files to find latest dump name ...")
-        full_dump_files = [x for x in self.ftp.nlst() if x.startswith("Freemium_kali")]
+        full_dump_files = [
+            x for x in self.ftp.nlst() if x.startswith("Freemium_kali")
+        ]
         print("ok!")
         if len(full_dump_files) != 1:
-            raise Exception("there should be a single Freemium file on the FTP, but found %s" % (len(full_dump_files)))
+            raise Exception(
+                "there should be a single Freemium file on the FTP" +
+                ", but found %s" % (len(full_dump_files))
+            )
         self.dump_filename = full_dump_files[0]
 
     def download(self):
@@ -45,8 +49,12 @@ class Downloader(object):
     def extract(self):
         os.system("mkdir -p %s" % self.download_dir)
         print("extracting tar.gz archive to %s ..." % self.download_dir)
-        os.system("pv %s | tar -zxf - -C %s" % (self.dump_filename, self.download_dir))
+        os.system(
+            "pv %s | tar -zxf - -C %s" %
+            (self.dump_filename, self.download_dir)
+        )
         print("extract done !")
+
 
 if __name__ == "__main__":
     Downloader().run()

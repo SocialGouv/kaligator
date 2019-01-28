@@ -48,6 +48,12 @@ Then you have to run a script from the `kali_extractor` container to fetch, pars
 docker-compose run extractor python parser.py --download
 ```
 
+## Run tests
+
+```sh
+docker-compose run extractor python tests/dict_utils_tests.py
+```
+
 ## Usage
 
 The REST API is accessible locally on [http://localhost:5000](http://localhost:5000). Use `curl` or `httpie` to access it, by default it will return XML to browsers which is not very convenient.

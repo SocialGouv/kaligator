@@ -5,7 +5,7 @@ SOME_OBJ = {
     'first': {
         'easy': {
             'peasy': 10,
-            'nested': [1,2,3]
+            'nested': [1, 2, 3]
         }
     },
     'less_easy': {
@@ -35,7 +35,7 @@ class DictUtilsTests(unittest.TestCase):
             [(
                 {
                     'peasy': 10,
-                    'nested': [1,2,3]
+                    'nested': [1, 2, 3]
                 },
                 '/first/easy'
             )]
@@ -74,10 +74,12 @@ class DictUtilsTests(unittest.TestCase):
         deep_set(d, '/par/child', 'new_value')
         self.assertEqual(d, {"par": {"child": "new_value"}})
 
-    def test_deep_set_1(self):
+    def test_deep_set_2(self):
         d = {"par": [{"child": 'val1'}, {"child": "val2"}]}
         deep_set(d, '/par[1]/child', 'new_value')
-        self.assertEqual(d, {"par": [{"child": 'val1'}, {"child": "new_value"}]})
+        self.assertEqual(
+            d, {"par": [{"child": 'val1'}, {"child": "new_value"}]}
+        )
 
     def test_xpath_to_keys_1(self):
         self.assertEqual(
@@ -94,4 +96,3 @@ class DictUtilsTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
