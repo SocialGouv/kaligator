@@ -18,7 +18,7 @@ _steps:
     python: 3.7
     cache: pip
     before_script: pip install flake8 pylama
-    
+
   - &deploy_stage
     stage: Deploy
     if: type = push AND tag IS present
@@ -37,17 +37,15 @@ jobs:
     - <<: *build_stage
       name: API
       before_install: cd kali_api
-      script: 
+      script:
         - flake8
-        - pylama
-      
+
     - <<: *build_stage
       name: Extractor
-      before_install: cd kali_extractor
-      script: 
+      before_install: cd kali_extractor && pip install -e .
+      script:
         - flake8
-        - pylama
-        - python tests/dict_utils_tests.py
+        - python kali_extractor/tests/dict_utils_tests.py
 
     - <<: *deploy_stage
       name: Deploy latest extractor image to Docker Hub
