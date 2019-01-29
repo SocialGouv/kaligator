@@ -22,11 +22,10 @@ class TexteStructProcessorTests(unittest.TestCase):
                 }
             ),
             {
-                'TAG_NAME': {
-                    'att1': 'val1',
-                    'att2': 'val2',
-                    '_text': 'Blah'
-                }
+                '_type': "TAG_NAME",
+                'att1': 'val1',
+                'att2': 'val2',
+                '_text': 'Blah'
             }
         )
 
@@ -37,78 +36,71 @@ class TexteStructProcessorTests(unittest.TestCase):
             parsed["STRUCT"],
             [
                 {
-                    "LIEN_SECTION_TA": {
-                        "cid": "KALISCTA000032593516",
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALISCTA000032593516",
-                        "niv": 1,
-                        "url": "/KALI/SCTA/00/00/32/59/35/KALISCTA000032593516.xml",  # noqa: E501
-                        "_text": "Pr\u00e9ambule"
-                    },
+                    "_type": "LIEN_SECTION_TA",
+                    "cid": "KALISCTA000032593516",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALISCTA000032593516",
+                    "niv": 1,
+                    "url": "/KALI/SCTA/00/00/32/59/35/KALISCTA000032593516.xml",  # noqa: E501
+                    "_text": "Pr\u00e9ambule"
                 },
                 {
-                    "LIEN_ART": {
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALIARTI000032593517",
-                        "num": "1er",
-                        "origine": "KALI"
-                    },
+                    "_type": "LIEN_ART",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALIARTI000032593517",
+                    "num": "1er",
+                    "origine": "KALI"
                 },
                 {
-                    "LIEN_ART": {
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALIARTI000032593518",
-                        "num": 2,
-                        "origine": "KALI"
-                    },
+                    "_type": "LIEN_ART",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALIARTI000032593518",
+                    "num": 2,
+                    "origine": "KALI"
                 },
                 {
-                    "LIEN_ART": {
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALIARTI000032593522",
-                        "num": 3,
-                        "origine": "KALI"
-                    },
+                    "_type": "LIEN_ART",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALIARTI000032593522",
+                    "num": 3,
+                    "origine": "KALI"
                 },
                 {
-                    "LIEN_ART": {
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALIARTI000032593523",
-                        "num": 4,
-                        "origine": "KALI"
-                    },
+                    "_type": "LIEN_ART",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALIARTI000032593523",
+                    "num": 4,
+                    "origine": "KALI"
                 },
                 {
-                    "LIEN_ART": {
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALIARTI000032593524",
-                        "num": 5,
-                        "origine": "KALI"
-                    },
+                    "_type": "LIEN_ART",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALIARTI000032593524",
+                    "num": 5,
+                    "origine": "KALI"
                 },
                 {
-                    "LIEN_SECTION_TA": {
-                        "cid": "KALISCTA000032593525",
-                        "debut": "2016-06-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALISCTA000032593525",
-                        "niv": 1,
-                        "url": "/KALI/SCTA/00/00/32/59/35/KALISCTA000032593525.xml",  # noqa: E501
-                        "_text": "Annexe I"
-                    }
+                    "_type": "LIEN_SECTION_TA",
+                    "cid": "KALISCTA000032593525",
+                    "debut": "2016-06-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALISCTA000032593525",
+                    "niv": 1,
+                    "url": "/KALI/SCTA/00/00/32/59/35/KALISCTA000032593525.xml",  # noqa: E501
+                    "_text": "Annexe I"
                 }
             ]
         )
@@ -120,14 +112,13 @@ class TexteStructProcessorTests(unittest.TestCase):
             parsed["STRUCT"],
             [
                 {
-                    "LIEN_ART": {
-                        "debut": "2016-09-01",
-                        "etat": "VIGUEUR_ETEN",
-                        "fin": "2999-01-01",
-                        "id": "KALIARTI000032611648",
-                        "num": "",
-                        "origine": "KALI"
-                    },
+                    "_type": "LIEN_ART",
+                    "debut": "2016-09-01",
+                    "etat": "VIGUEUR_ETEN",
+                    "fin": "2999-01-01",
+                    "id": "KALIARTI000032611648",
+                    "num": "",
+                    "origine": "KALI"
                 }
             ]
         )

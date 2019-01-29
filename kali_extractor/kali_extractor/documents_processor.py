@@ -105,14 +105,15 @@ class SectionTaProcessor(DocumentProcessor):
 def flatten_abdera_item(item):
     """
         takes a dict parsed by the abdera algorithm and returns one
-        that is formatted like a custom one
+        that is formatted like the rest of the XML parsed docs
+        (with top level attributes and a `_text` key)
     """
     keys = list(item.keys())
     if len(keys) != 1:
         raise Exception("found %s abdera tag names instead of 1" % len(keys))
     key = keys[0]
     abdera_obj = item[key]
-    new_object = {}
+    new_object = {"_type": key}
     for name, value in abdera_obj.get("attributes").items():
         new_object[name] = value
     if "children" in abdera_obj:
@@ -127,7 +128,7 @@ def flatten_abdera_item(item):
                 len(abdera_obj["children"])
             )
         new_object["_text"] = abdera_obj["children"][0]
-    return {key: new_object}
+    return new_object
 
 
 class TexteVersionProcessor(DocumentProcessor):
@@ -175,4 +176,6 @@ class TexteStructProcessor(DocumentProcessor):
             flat_children = [flatten_abdera_item(c) for c in children]
         elif len(subdocs[0]["STRUCT"].keys()) == 1:
             flat_children = [flatten_abdera_item(subdocs[0]["STRUCT"])]
+        elif not subdocs[0]["STRUCT"]:
+            flat_children = []
         self.json["STRUCT"] = flat_children
