@@ -3,24 +3,46 @@ import progressbar
 from pymongo import MongoClient
 import argparse
 from documents_processor import ArticleProcessor, IDCCProcessor, \
-    SectionTaProcessor, TexteProcessor
+    SectionTaProcessor, TexteStructProcessor, TexteVersionProcessor
 from functools import partial
 from file_utils import get_nested_file_paths
 from downloader import Downloader
+from dict_utils import deep_get
 
 
-PROCESSOR_MAPPING = {
-    "article": ArticleProcessor,
-    "conteneur": IDCCProcessor,
-    "section_ta": SectionTaProcessor,
-    "texte": TexteProcessor,
+DOC_TYPES_MAPPING = {
+    "article": {"processor": ArticleProcessor, "collection": "articles"},
+    "conteneur": {"processor": IDCCProcessor, "collection": "conteneurs"},
+    "section_ta": {
+        "processor": SectionTaProcessor, "collection": "section_tas"
+    },
+    # it's important that texte/struct is before texte/version because of
+    # https://github.com/SocialGouv/kali_dumps_scripts/issues/12
+    "texte/struct": {
+        "processor": TexteStructProcessor, "collection": "textes"
+    },
+    "texte/version": {
+        "processor": TexteVersionProcessor, "collection": "textes"
+    },
 }
+DOC_TYPES = list(DOC_TYPES_MAPPING.keys())
 
 
 def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
-    processor = PROCESSOR_MAPPING[doc_type]
+    processor = DOC_TYPES_MAPPING[doc_type]["processor"]
+    collection = DOC_TYPES_MAPPING[doc_type]["collection"]
     parsed_document = processor(xml_path).process()
-    mongo_db[doc_type].insert_one(parsed_document)
+    kali_id, _ = next(deep_get(parsed_document, "META/META_COMMUN/ID"))
+    mongo_db[collection].update_one(
+        {"META.META_COMMUN.ID": kali_id},
+        {"$set": parsed_document},
+        upsert=True
+    )
+
+
+def ensure_indexes(mongo_db, doc_type):
+    collection = DOC_TYPES_MAPPING[doc_type]["collection"]
+    mongo_db[collection].create_index("META.META_COMMUN.ID")
 
 
 if __name__ == "__main__":
@@ -47,7 +69,7 @@ if __name__ == "__main__":
         "only works with mode MongoDB"
     )
     parser.add_argument(
-        '--only', choices=["article", "idcc", "section_ta", "texte"],
+        '--only', choices=DOC_TYPES,
         help="limits the extraction to a single document type"
     )
     parser.add_argument(
@@ -70,13 +92,7 @@ if __name__ == "__main__":
     mongo_db = mongo_client[args.mongo_db_name]
     action = partial(convert_and_insert_in_mongo, mongo_db)
 
-    if args.drop:
-        mongo_client.drop_database(args.mongo_db_name)
-
-    if args.only:
-        doc_types = [args.only]
-    else:
-        doc_types = ["article", "conteneur", "section_ta", "texte"]
+    doc_types = [args.only] if args.only else DOC_TYPES
 
     dump_dir_root = os.path.join(args.dump_dir, "kali", "global")
     if not os.path.isdir(dump_dir_root):
@@ -85,7 +101,12 @@ if __name__ == "__main__":
         )
 
     for doc_type in doc_types:
+        if args.drop:
+            collection = DOC_TYPES_MAPPING[doc_type]["collection"]
+            print("dropping %s " % collection)
+            mongo_db[collection].drop()
         subdir_path = os.path.join(dump_dir_root, doc_type)
+        ensure_indexes(mongo_db, doc_type)
         print(
             "going through %s recursively to get XML paths ..." %
             subdir_path

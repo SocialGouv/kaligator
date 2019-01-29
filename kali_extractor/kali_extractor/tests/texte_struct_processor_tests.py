@@ -1,12 +1,12 @@
 import unittest
 import os
 from kali_extractor.documents_processor import \
-    flatten_abdera_item, TexteProcessor
+    flatten_abdera_item, TexteStructProcessor
 
 dirname = os.path.dirname(__file__)
 
 
-class TexteProcessorTests(unittest.TestCase):
+class TexteStructProcessorTests(unittest.TestCase):
 
     def test_flatten_abdera(self):
         self.assertEqual(
@@ -32,7 +32,7 @@ class TexteProcessorTests(unittest.TestCase):
 
     def test_struct_1(self):
         filename = os.path.join(dirname, 'fixtures/KALITEXT_STRUCT_1.xml')
-        parsed = TexteProcessor(filename).process()
+        parsed = TexteStructProcessor(filename).process()
         self.assertEqual(
             parsed["STRUCT"],
             [

@@ -130,21 +130,26 @@ def flatten_abdera_item(item):
     return {key: new_object}
 
 
-class TexteProcessor(DocumentProcessor):
+class TexteVersionProcessor(DocumentProcessor):
     def __init__(self, xml_path, **kwargs):
-        super(TexteProcessor, self).__init__(
+        super(TexteVersionProcessor, self).__init__(
             xml_path,
             html_fields=[],
             array_fields=["VERSIONS/VERSION"],
             **kwargs
         )
 
+
+class TexteStructProcessor(DocumentProcessor):
+    def __init__(self, xml_path, **kwargs):
+        super(TexteStructProcessor, self).__init__(xml_path, **kwargs)
+
     def parse_xml(self):
         """
             slightly hacky, this fixes #6, as the STRUCT contains a mixed
             list of two different tags, we cannot treat it as the array fields
         """
-        super(TexteProcessor, self).parse_xml()
+        super(TexteStructProcessor, self).parse_xml()
         if 'STRUCT' not in self.json:
             return
         doc = abdera.data(self.root)
