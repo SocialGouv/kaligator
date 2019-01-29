@@ -134,7 +134,16 @@ class TexteVersionProcessor(DocumentProcessor):
     def __init__(self, xml_path, **kwargs):
         super(TexteVersionProcessor, self).__init__(
             xml_path,
-            html_fields=[],
+            html_fields=[
+                "VISAS/CONTENU",
+                "SIGNATAIRES/SIGNPATRON/CONTENU",
+                "SIGNATAIRES/SIGNSYNDIC/CONTENU",
+                "SIGNATAIRES/ORGADHERE/CONTENU",
+                "SIGNATAIRES/ORGDENONCE/CONTENU",
+                "SIGNATAIRES/SIGNEXT/CONTENU",
+                "SIGNATAIRES/EXECUTION/CONTENU",
+                "NOTA/CONTENU",
+            ],
             array_fields=["VERSIONS/VERSION"],
             **kwargs
         )
