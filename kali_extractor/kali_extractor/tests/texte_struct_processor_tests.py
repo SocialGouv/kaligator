@@ -113,6 +113,25 @@ class TexteStructProcessorTests(unittest.TestCase):
             ]
         )
 
+    def test_struct_2(self):
+        filename = os.path.join(dirname, 'fixtures/KALITEXT_STRUCT_2.xml')
+        parsed = TexteStructProcessor(filename).process()
+        self.assertEqual(
+            parsed["STRUCT"],
+            [
+                {
+                    "LIEN_ART": {
+                        "debut": "2016-09-01",
+                        "etat": "VIGUEUR_ETEN",
+                        "fin": "2999-01-01",
+                        "id": "KALIARTI000032611648",
+                        "num": "",
+                        "origine": "KALI"
+                    },
+                }
+            ]
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

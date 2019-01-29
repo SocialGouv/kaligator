@@ -170,8 +170,9 @@ class TexteStructProcessor(DocumentProcessor):
             raise Exception(
                 "found %s STRUCT tags in TEXTEKALI instead of 1" % len(subdocs)
             )
-        if not subdocs[0]["STRUCT"].get("children"):
-            return
-        children = subdocs[0]["STRUCT"]["children"]
-        flat_children = [flatten_abdera_item(c) for c in children]
+        if subdocs[0]["STRUCT"].get("children"):
+            children = subdocs[0]["STRUCT"]["children"]
+            flat_children = [flatten_abdera_item(c) for c in children]
+        elif len(subdocs[0]["STRUCT"].keys()) == 1:
+            flat_children = [flatten_abdera_item(subdocs[0]["STRUCT"])]
         self.json["STRUCT"] = flat_children
