@@ -1,8 +1,8 @@
 from xml.etree import ElementTree
 import html
-from kali_extractor.custom_xml_parser import custom_xml_parser
+from kali_extractor.custom_xml_parser import \
+    custom_xml_parser, custom_abdera_parser
 from kali_extractor.dict_utils import deep_get, deep_set
-from xmljson import abdera
 
 
 class DocumentProcessor(object):
@@ -162,7 +162,7 @@ class TexteStructProcessor(DocumentProcessor):
         super(TexteStructProcessor, self).parse_xml()
         if 'STRUCT' not in self.json:
             return
-        doc = abdera.data(self.root)
+        doc = custom_abdera_parser.data(self.root)
         subdocs = [
             d for d in doc["TEXTEKALI"]["children"]
             if ["STRUCT"] == list(d.keys())

@@ -8,6 +8,8 @@ dirname = os.path.dirname(__file__)
 
 class TexteStructProcessorTests(unittest.TestCase):
 
+    maxDiff = None
+
     def test_flatten_abdera(self):
         self.assertEqual(
             flatten_abdera_item(
@@ -40,9 +42,9 @@ class TexteStructProcessorTests(unittest.TestCase):
                     "cid": "KALISCTA000032593516",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALISCTA000032593516",
-                    "niv": 1,
+                    "niv": "1",
                     "url": "/KALI/SCTA/00/00/32/59/35/KALISCTA000032593516.xml",  # noqa: E501
                     "_text": "Pr\u00e9ambule"
                 },
@@ -50,7 +52,7 @@ class TexteStructProcessorTests(unittest.TestCase):
                     "_type": "LIEN_ART",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALIARTI000032593517",
                     "num": "1er",
                     "origine": "KALI"
@@ -59,36 +61,36 @@ class TexteStructProcessorTests(unittest.TestCase):
                     "_type": "LIEN_ART",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALIARTI000032593518",
-                    "num": 2,
+                    "num": "2",
                     "origine": "KALI"
                 },
                 {
                     "_type": "LIEN_ART",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALIARTI000032593522",
-                    "num": 3,
+                    "num": "3",
                     "origine": "KALI"
                 },
                 {
                     "_type": "LIEN_ART",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALIARTI000032593523",
-                    "num": 4,
+                    "num": "4",
                     "origine": "KALI"
                 },
                 {
                     "_type": "LIEN_ART",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALIARTI000032593524",
-                    "num": 5,
+                    "num": "5",
                     "origine": "KALI"
                 },
                 {
@@ -96,9 +98,9 @@ class TexteStructProcessorTests(unittest.TestCase):
                     "cid": "KALISCTA000032593525",
                     "debut": "2016-06-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALISCTA000032593525",
-                    "niv": 1,
+                    "niv": "1",
                     "url": "/KALI/SCTA/00/00/32/59/35/KALISCTA000032593525.xml",  # noqa: E501
                     "_text": "Annexe I"
                 }
@@ -115,9 +117,9 @@ class TexteStructProcessorTests(unittest.TestCase):
                     "_type": "LIEN_ART",
                     "debut": "2016-09-01",
                     "etat": "VIGUEUR_ETEN",
-                    "fin": "2999-01-01",
+                    "fin": None,
                     "id": "KALIARTI000032611648",
-                    "num": "",
+                    "num": None,
                     "origine": "KALI"
                 }
             ]

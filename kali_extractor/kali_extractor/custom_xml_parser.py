@@ -1,6 +1,12 @@
-from xmljson import XMLData
+from xmljson import XMLData, Abdera
 # from xmljson import parker as custom_xml_parser
 from collections import OrderedDict
+
+
+def custom_from_string(value):
+    if value == "" or value == '2999-01-01':
+        return None
+    return value
 
 
 class CustomXmlParser(XMLData):
@@ -17,8 +23,12 @@ class CustomXmlParser(XMLData):
     - attributes with string value "2999-01-01" will be parsed to null:
       {tag_name: {attr1: null}}
     '''
+    @staticmethod
+    def _fromstring(value):
+        return custom_from_string(value)
+
     def __init__(self, **kwargs):
-        kwargs.setdefault('xml_fromstring', False)
+        # kwargs.setdefault('xml_fromstring', False)
         super(CustomXmlParser, self).__init__(
             text_content='_text', simple_text=True, **kwargs
         )
@@ -30,12 +40,14 @@ class CustomXmlParser(XMLData):
             key, value = list(res.items())[0]
             if isinstance(value, OrderedDict) and len(value) == 0:
                 res[key] = None
-        for key, value in res.items():
-            if isinstance(value, OrderedDict):
-                for sub_key, sub_value in value.items():
-                    if sub_value == "" or sub_value == '2999-01-01':
-                        res[key][sub_key] = None
         return res
 
 
+class CustomAbderaParser(Abdera):
+    @staticmethod
+    def _fromstring(value):
+        return custom_from_string(value)
+
+
+custom_abdera_parser = CustomAbderaParser()
 custom_xml_parser = CustomXmlParser()
