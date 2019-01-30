@@ -1,8 +1,10 @@
-# KALI Dumps scripts
+# KALIGATOR [![Build Status](https://travis-ci.com/SocialGouv/kaligator.svg?branch=master)](https://travis-ci.com/SocialGouv/kaligator)
 
-[![Build Status](https://travis-ci.com/SocialGouv/kali_dumps_scripts.svg?branch=master)](https://travis-ci.com/SocialGouv/kali_dumps_scripts)
+Imports the official KALI dumps to MongoDB.
 
-These tools help using KALI dumps (the French Conventions collectives nationales database).
+![logo kaligator](https://openclipart.org/image/100px/svg_to_png/172471/Krokodil.png)
+
+KALI is the French Conventions Collectives Nationales database. It is created by the [Direction de l’information légale et administrative (DILA)](http://www.dila.premier-ministre.gouv.fr/). The official way to access them is via [Legifrance](https://www.legifrance.gouv.fr/initRechConvColl.do)
 
 This project was created for the [Code Du Travail Numérique](https://incubateur.social.gouv.fr/startups/code-du-travail-numerique/) project.
 

@@ -17,7 +17,7 @@ DOC_TYPES_MAPPING = {
         "processor": SectionTaProcessor, "collection": "section_tas"
     },
     # it's important that texte/struct is before texte/version because of
-    # https://github.com/SocialGouv/kali_dumps_scripts/issues/12
+    # https://github.com/SocialGouv/kaligator/issues/12
     "texte/struct": {
         "processor": TexteStructProcessor, "collection": "textes"
     },

@@ -52,12 +52,12 @@ jobs:
       env:
         - *docker_image
         - *docker_keys
-        - DOCKER_IMAGE="socialgouv/kali-extractor"
+        - DOCKER_IMAGE="socialgouv/kaligator-extractor"
         - CTX=./kali_extractor
     - <<: *deploy_stage
       name: Deploy latest api image to Docker Hub
       env:
         - *docker_image
         - *docker_keys
-        - DOCKER_IMAGE="socialgouv/kali-api"
+        - DOCKER_IMAGE="socialgouv/kaligator-api"
         - CTX=./kali_api
