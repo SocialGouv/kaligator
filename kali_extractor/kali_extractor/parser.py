@@ -28,11 +28,14 @@ DOC_TYPES_MAPPING = {
 DOC_TYPES = list(DOC_TYPES_MAPPING.keys())
 
 
-def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
+def convert_and_upsert_in_mongo(mongo_db, doc_type, xml_path):
     processor = DOC_TYPES_MAPPING[doc_type]["processor"]
     collection = DOC_TYPES_MAPPING[doc_type]["collection"]
     parsed_document = processor(xml_path).process()
-    kali_id, _ = next(deep_get(parsed_document, "META/META_COMMUN/ID"))
+    if doc_type == "section_ta":
+        kali_id = parsed_document["ID"]
+    else:
+        kali_id, _ = next(deep_get(parsed_document, "META/META_COMMUN/ID"))
     mongo_db[collection].update_one(
         {"META.META_COMMUN.ID": kali_id},
         {"$set": parsed_document},
@@ -40,9 +43,19 @@ def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
     )
 
 
+def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
+    processor = DOC_TYPES_MAPPING[doc_type]["processor"]
+    collection = DOC_TYPES_MAPPING[doc_type]["collection"]
+    parsed_document = processor(xml_path).process()
+    mongo_db[collection].insert(parsed_document)
+
+
 def ensure_indexes(mongo_db, doc_type):
     collection = DOC_TYPES_MAPPING[doc_type]["collection"]
-    mongo_db[collection].create_index("META.META_COMMUN.ID")
+    if doc_type == "section_ta":
+        mongo_db[collection].create_index("META.META_COMMUN.ID")
+    else:
+        mongo_db[collection].create_index("ID")
 
 
 if __name__ == "__main__":
@@ -90,7 +103,11 @@ if __name__ == "__main__":
     )
     mongo_client = MongoClient(args.mongo_uri)
     mongo_db = mongo_client[args.mongo_db_name]
-    action = partial(convert_and_insert_in_mongo, mongo_db)
+    if args.drop:
+        # safe to only insert when dropping
+        action = partial(convert_and_insert_in_mongo, mongo_db)
+    else:
+        action = partial(convert_and_upsert_in_mongo, mongo_db)
 
     doc_types = [args.only] if args.only else DOC_TYPES
 
