@@ -145,14 +145,17 @@ class TexteVersionProcessor(DocumentProcessor):
                 "SIGNATAIRES/EXECUTION/CONTENU",
                 "NOTA/CONTENU",
             ],
-            array_fields=["VERSIONS/VERSION"],
             **kwargs
         )
 
 
 class TexteStructProcessor(DocumentProcessor):
     def __init__(self, xml_path, **kwargs):
-        super(TexteStructProcessor, self).__init__(xml_path, **kwargs)
+        super(TexteStructProcessor, self).__init__(
+            xml_path,
+            array_fields=["VERSIONS/VERSION"],
+            **kwargs
+        )
 
     def parse_xml(self):
         """
