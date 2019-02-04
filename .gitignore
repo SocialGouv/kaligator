@@ -1,5 +1,6 @@
-*.json
 __pycache__
 kali_json
 kali_extractor/*.tar.gz
 kali_extractor/kali_dump
+.env
+.vscode
