@@ -3,22 +3,18 @@ services:
   mongodb:
     image: mongo
     restart: always
-    ports:
-      - "27019:27017"
+    env_file:
+      - .env
     environment:
-      MONGO_INITDB_ROOT_USERNAME: kali
-      MONGO_INITDB_ROOT_PASSWORD: kali
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_PASSWORD
   api:
-    build: kali_api
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./kali_api:/code
-    environment:
-      - MONGODB_URI=mongodb://kali:kali@mongodb/
+    image: socialgouv/kaligator-api:latest
+    restart: always
+    env_file:
+      - .env
+
   extractor:
-    build: kali_extractor
-    volumes:
-      - ./kali_extractor:/code
-    environment:
-      - MONGODB_URI=mongodb://kali:kali@mongodb/admin
+    image: socialgouv/kaligator-extractor:latest
+    env_file:
+      - .env

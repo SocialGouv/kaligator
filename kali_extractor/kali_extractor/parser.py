@@ -22,7 +22,8 @@ DOC_TYPES_MAPPING = {
         "processor": TexteStructProcessor, "collection": "textes"
     },
     "texte/version": {
-        "processor": TexteVersionProcessor, "collection": "textes"
+        "processor": TexteVersionProcessor, "collection": "textes",
+        "force_upsert": True
     },
 }
 DOC_TYPES = list(DOC_TYPES_MAPPING.keys())
@@ -47,7 +48,7 @@ def convert_and_insert_in_mongo(mongo_db, doc_type, xml_path):
     processor = DOC_TYPES_MAPPING[doc_type]["processor"]
     collection = DOC_TYPES_MAPPING[doc_type]["collection"]
     parsed_document = processor(xml_path).process()
-    mongo_db[collection].insert(parsed_document)
+    mongo_db[collection].insert_one(parsed_document)
 
 
 def ensure_indexes(mongo_db, doc_type):
@@ -103,11 +104,6 @@ if __name__ == "__main__":
     )
     mongo_client = MongoClient(args.mongo_uri)
     mongo_db = mongo_client[args.mongo_db_name]
-    if args.drop:
-        # safe to only insert when dropping
-        action = partial(convert_and_insert_in_mongo, mongo_db)
-    else:
-        action = partial(convert_and_upsert_in_mongo, mongo_db)
 
     doc_types = [args.only] if args.only else DOC_TYPES
 
@@ -118,10 +114,16 @@ if __name__ == "__main__":
         )
 
     for doc_type in doc_types:
-        if args.drop:
+        if args.drop and not DOC_TYPES_MAPPING[doc_type].get("force_upsert"):
+            # safe to only insert when dropping
+            print("using insert !")
             collection = DOC_TYPES_MAPPING[doc_type]["collection"]
             print("dropping %s " % collection)
             mongo_db[collection].drop()
+            action = partial(convert_and_insert_in_mongo, mongo_db)
+        else:
+            print("using upsert !")
+            action = partial(convert_and_upsert_in_mongo, mongo_db)
         subdir_path = os.path.join(dump_dir_root, doc_type)
         ensure_indexes(mongo_db, doc_type)
         print(

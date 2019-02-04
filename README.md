@@ -47,7 +47,7 @@ docker-compose up
 Then you have to run a script from the `kali_extractor` container to fetch, parse and store into MongoDB the KALI dumps.
 
 ```sh
-docker-compose run extractor python parser.py --download
+docker-compose run extractor python kali_extractor/parser.py --download
 ```
 
 ## Run tests
@@ -64,6 +64,22 @@ The MongoDB database is exposed on your host machine on port 27019 with the `kal
 
 You can access it using any MongoDB client (I recommend [Studio 3T](https://studio3t.com/download/)) to explore.
 
+
+## Production
+
+Start MongoDB and API as daemons:
+
+```sh
+sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+Initial import
+
+```sh
+sudo docker-compose -f docker-compose.yml -f docker-compose.prod.yml run extractor python kali_extractor/parser.py --download --drop
+```
+
+(cf https://docs.docker.com/compose/extends/)
 
 ## External Resources
 
