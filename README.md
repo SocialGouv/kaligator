@@ -34,7 +34,7 @@ The infos in this documentation come from:
 
 I also built a partial Entity Relationship Diagram, to see the relations between the different objects of this dump:
 
-![entity relationship diagram](https://www.lucidchart.com/publicSegments/view/100dd7d0-6a0c-4569-a5d8-580b7ac3f1e3/image.png)
+[![entity relationship diagram](https://www.lucidchart.com/publicSegments/view/100dd7d0-6a0c-4569-a5d8-580b7ac3f1e3/image.png)](https://www.lucidchart.com/publicSegments/view/100dd7d0-6a0c-4569-a5d8-580b7ac3f1e3/image.png)
 
 ## Local setup
 
