@@ -50,14 +50,12 @@ jobs:
     - <<: *deploy_stage
       name: Deploy latest extractor image to Docker Hub
       env:
-        - *docker_image
         - *docker_keys
         - DOCKER_IMAGE="socialgouv/kaligator-extractor"
         - CONTEXT=./kali_extractor
     - <<: *deploy_stage
       name: Deploy latest api image to Docker Hub
       env:
-        - *docker_image
         - *docker_keys
         - DOCKER_IMAGE="socialgouv/kaligator-api"
         - CONTEXT=./kali_api
